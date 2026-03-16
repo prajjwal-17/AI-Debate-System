@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import "./globals.css"
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "DebateForge",
-  description: "Two AIs argue. You intervene.",
+  description: "Two AI personas argue. You intervene. Powered by Ollama.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>{children}</body>

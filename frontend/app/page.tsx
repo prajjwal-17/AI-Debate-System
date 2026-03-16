@@ -1,8 +1,8 @@
 "use client";
 import HomeNav      from "../components/home/HomeNav";
 import HeroSection  from "../components/home/HeroSection";
-import FeatureCards from "../components/home/FeatureCards";
-import DebatePreview from "../components/home/DebatePreview";
+import PersonaCards from "../components/home/PersonaCards";
+import DebateSetup  from "../components/home/DebateSetup";
 import HomeFooter   from "../components/home/HomeFooter";
 
 export default function HomePage() {
@@ -11,8 +11,8 @@ export default function HomePage() {
       <HomeNav />
       <main style={{ flex: 1 }}>
         <HeroSection />
-        <FeatureCards />
-        <DebatePreview />
+        <PersonaCards />
+        <DebateSetup />
       </main>
       <HomeFooter />
     </div>

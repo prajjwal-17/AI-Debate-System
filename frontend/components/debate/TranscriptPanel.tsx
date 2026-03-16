@@ -2,23 +2,15 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import TranscriptEntry from "./TranscriptEntry";
-import { DEBATE_SCRIPT } from "../../data/debateScript";
-import type { TranscriptEntry as TEntry } from "../../types";
+import type { TranscriptLine, SpeakerSide, PersonaKey } from "../../types";
 
-interface TranscriptPanelProps {
-  transcript: TEntry[];
-  currentIdx: number;
-  speakingID: "A" | "B" | null;
-}
+interface TranscriptPanelProps { transcript: TranscriptLine[]; speakingID: SpeakerSide | null; proPersona: PersonaKey | null; conPersona: PersonaKey | null; totalTurns: number; }
 
-export default function TranscriptPanel({ transcript, currentIdx, speakingID }: TranscriptPanelProps) {
+export default function TranscriptPanel({ transcript, speakingID, proPersona, conPersona, totalTurns }: TranscriptPanelProps) {
   const logRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
-  }, [transcript]);
-
-  const progress = Math.max(0, ((currentIdx + 1) / DEBATE_SCRIPT.length) * 100);
+  useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [transcript]);
+  const aiLines  = transcript.filter((t) => t.speaker !== "User").length;
+  const progress = totalTurns > 0 ? Math.min(100, (aiLines / Math.max(totalTurns, 1)) * 100) : 0;
 
   return (
     <div className="w-full lg:w-80 flex flex-col" style={{ background: "#0d0626", border: "6px solid #000", boxShadow: "6px 6px 0 #000", borderRadius: 4, overflow: "hidden", maxHeight: "80vh" }}>
@@ -31,12 +23,8 @@ export default function TranscriptPanel({ transcript, currentIdx, speakingID }: 
             No arguments yet.<br />Press START to ignite chaos.
           </p>
         )}
-        {transcript.map((entry, i) => (
-          <TranscriptEntry
-            key={`${entry.id}-${i}`}
-            entry={entry}
-            isActive={currentIdx === entry.id && speakingID === entry.speakerID}
-          />
+        {transcript.map((entry) => (
+          <TranscriptEntry key={entry.id} entry={entry} isActive={speakingID === entry.speaker && !entry.isHuman} proPersona={proPersona} conPersona={conPersona} />
         ))}
       </div>
       <div className="p-3" style={{ borderTop: "3px solid #ffffff15" }}>
@@ -44,9 +32,7 @@ export default function TranscriptPanel({ transcript, currentIdx, speakingID }: 
         <div style={{ height: 8, background: "#ffffff15", border: "2px solid #000", borderRadius: 2, overflow: "hidden" }}>
           <motion.div animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} style={{ height: "100%", background: "#FFE000" }} />
         </div>
-        <div className="text-right text-xs mt-1" style={{ color: "#ffffff40", fontFamily: "'Arial',sans-serif" }}>
-          {Math.max(0, currentIdx + 1)} / {DEBATE_SCRIPT.length} TURNS
-        </div>
+        <div className="text-right text-xs mt-1" style={{ color: "#ffffff40", fontFamily: "'Arial',sans-serif" }}>{aiLines} turns</div>
       </div>
     </div>
   );

@@ -1,39 +1,99 @@
-export interface DebateTurn {
-  id: number;
-  speakerID: "A" | "B";
+export type PersonaKey =
+  | "The Professor"
+  | "The Aggressor"
+  | "The Philosopher"
+  | "The Troll";
+
+export type SpeakerSide = "Pro" | "Con" | "User";
+
+export interface PersonaMeta {
+  key: PersonaKey;
+  emoji: string;
+  tagline: string;
+  color: string;
+  shadow: string;
+  nameBg: string;
+  voicePitch: number;
+  voiceRate: number;
+  preferHighVoice: boolean;
+  description: string;
+}
+
+export interface HistoryEntry {
+  speaker: SpeakerSide;
   text: string;
-  pitch: number;
-  rate: number;
 }
 
-export interface HumanTurn {
-  id: number;
-  speakerID: "HUMAN";
+export interface FirstTurn {
+  speaker: SpeakerSide;
   text: string;
-  pitch: number;
-  rate: number;
+  history: HistoryEntry[];
+  audio_url?: string;
 }
 
-export type TranscriptEntry = DebateTurn | HumanTurn;
-
-export interface DebateState {
-  isRunning: boolean;
-  currentIdx: number;
-  speakingID: "A" | "B" | null;
-  transcript: TranscriptEntry[];
-  humanMode: boolean;
-  humanText: string;
-  statusMsg: string;
-  debateOver: boolean;
-  round: number;
+export interface StartDebateResponse {
+  session_id: string;
+  topic: string;
+  pro_character: PersonaKey;
+  con_character: PersonaKey;
+  first_turn: FirstTurn;
 }
 
-export interface DebateActions {
-  setHumanText: (text: string) => void;
-  startDebate: () => void;
-  shutUp: () => void;
-  resumeDebate: () => void;
-  submitHumanInput: () => void;
+export interface NextTurnResponse {
+  speaker: SpeakerSide;
+  text: string;
+  history: HistoryEntry[];
+  audio_url?: string;
+  status?: string;
 }
 
-export type UseDebateReturn = DebateState & DebateActions;
+export interface FallacyResult {
+  fallacy: string;
+  explanation: string;
+}
+
+export interface InterruptResponse {
+  status: string;
+  fallacies_detected: FallacyResult;
+  steelmanned_version: string;
+  next_speaker: SpeakerSide;
+}
+
+export interface JudgeVerdict {
+  winner: "Pro" | "Con";
+  reason: string;
+  brag: string;
+}
+
+export interface JudgeResponse {
+  verdict: JudgeVerdict;
+  winning_character: PersonaKey;
+}
+
+export interface LeaderboardEntry {
+  wins: number;
+  last_brag: string;
+}
+
+export type LeaderboardData = Record<PersonaKey, LeaderboardEntry>;
+
+export interface TranscriptLine {
+  id: string;
+  speaker: SpeakerSide;
+  personaName: string;
+  text: string;
+  isHuman?: boolean;
+  isSteelmanned?: boolean;
+}
+
+export interface FallacyDisplay {
+  fallacy: string;
+  explanation: string;
+  steelmanned: string;
+}
+
+export interface DebateSetupConfig {
+  topic: string;
+  proPersona: PersonaKey;
+  conPersona: PersonaKey;
+}

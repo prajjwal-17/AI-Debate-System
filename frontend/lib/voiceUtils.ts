@@ -10,7 +10,6 @@ export function getBestVoice(
     const v = voices.find((v) => v.name.includes(name));
     if (v) return v;
   }
-
   const natural = voices.filter(
     (v) => !v.name.toLowerCase().includes("google") && v.lang.startsWith("en")
   );
