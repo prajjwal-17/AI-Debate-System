@@ -51,7 +51,7 @@ System prompting forces the AI into specific psychological profiles that never b
 * 🧌 **The Troll:** Dismissive, slang-heavy, intentionally frustrating but logically sound.
 * 🔥 **The Aggressor & 🏛️ The Philosopher.**
 
-![Live Debate Arena](assets/arena.jpeg)
+![Live Debate Arena](https://github.com/prajjwal-17/AI-Debate-System/blob/main/assests/arena.jpeg)
 
 ### 3. Real-Time NLP Interruption (The Sandbox)
 Humans can pause the autonomous loop at any time and type their own arguments to attack either persona. 
