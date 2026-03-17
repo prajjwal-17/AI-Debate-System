@@ -58,7 +58,7 @@ Humans can pause the autonomous loop at any time and type their own arguments to
 * **Fallacy Detection:** The engine instantly flags logical flaws (e.g., False Dichotomy, Ad Hominem) in the human's input.
 * **Steelman Protocol:** Strips away human emotion and rewrites the argument into its strongest logical form before injecting it into the debate state.
 
-![Human Interrupt and Steelman feature](assets/interrupt.jpg)
+![Human Interrupt and Steelman feature](https://github.com/prajjwal-17/AI-Debate-System/blob/main/assests/interrupt.jpg)
 
 ### 4. LLM-as-a-Judge & Multilingual Support
 An impartial AI evaluates the full transcript, declares a winner based on logical merit, and updates a persistent leaderboard. The platform also features multilingual support (e.g., Hindi) for broader accessibility.
