@@ -67,9 +67,9 @@ An impartial AI evaluates the full transcript, declares a winner based on logica
 
 ## 🛠️ Tech Stack
 
-* **Frontend:** React / HTML+JS (Tailwind CSS)
+* **Frontend:** NextJS, Tailwind CSS) & Framer Motion
 * **Backend:** Python, FastAPI
-* **AI/Inference:** Ollama (Running local Llama 3 / Qwen 3.5 models via consumer GPU)
+* **AI/Inference:** Ollama (Running local Llama 3)
 * **Audio:** Web Speech API / `gTTS`
 
 ## 🚀 Local Setup & Installation
@@ -82,8 +82,10 @@ An impartial AI evaluates the full transcript, declares a winner based on logica
 ### 2. Start the AI Engine
 Open a terminal and pull your preferred model. Leave this running in the background to keep the model warm in VRAM.
 ```bash
-# We recommend Llama 3 or Qwen 3.5 (4B/9B)
-ollama run llama3 
+# We recommend Llama 3 (9B)
+ollama run llama3
+
+# We recommend Microsoft Edge
 ```
 
 ### 3. Backend Setup
