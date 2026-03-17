@@ -6,6 +6,8 @@ export type PersonaKey =
 
 export type SpeakerSide = "Pro" | "Con" | "User";
 
+export type DebateLanguage = "english" | "hindi" | "bengali" | "tamil" | "telugu";
+
 export interface PersonaMeta {
   key: PersonaKey;
   emoji: string;
@@ -36,6 +38,7 @@ export interface StartDebateResponse {
   topic: string;
   pro_character: PersonaKey;
   con_character: PersonaKey;
+  language: DebateLanguage;
   first_turn: FirstTurn;
 }
 
@@ -96,4 +99,5 @@ export interface DebateSetupConfig {
   topic: string;
   proPersona: PersonaKey;
   conPersona: PersonaKey;
+  language: DebateLanguage;  // ← added
 }

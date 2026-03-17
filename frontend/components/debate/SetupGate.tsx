@@ -73,7 +73,7 @@ export default function SetupGate({ setupConfig, setSetupConfig, onStart, isStar
         </AnimatePresence>
         <motion.button whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.96 }} onClick={onStart} disabled={isStarting}
           style={{ background: isStarting ? "#555" : "#FFE000", border: "5px solid #000", boxShadow: isStarting ? "3px 3px 0 #000" : "7px 7px 0 #000", padding: "14px 0", fontSize: 20, fontStyle: "italic", letterSpacing: "0.1em", color: "#000", cursor: isStarting ? "not-allowed" : "pointer", fontFamily: "'Impact','Arial Black',sans-serif", width: "100%", opacity: isStarting ? 0.7 : 1 }}>
-          {isStarting ? "⏳ CONNECTING TO OLLAMA..." : "▶ START THE DEBATE"}
+          {isStarting ? "⏳ WARMING UP THE ARENA..." : "▶ START THE DEBATE"}
         </motion.button>
       </motion.div>
     </div>

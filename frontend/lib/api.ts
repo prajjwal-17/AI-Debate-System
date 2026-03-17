@@ -5,6 +5,7 @@ import type {
   JudgeResponse,
   LeaderboardData,
   PersonaKey,
+  DebateLanguage,
 } from "../types";
 
 const BASE = "http://localhost:8000";
@@ -12,12 +13,18 @@ const BASE = "http://localhost:8000";
 export async function apiStartDebate(
   topic: string,
   proPersona: PersonaKey,
-  conPersona: PersonaKey
+  conPersona: PersonaKey,
+  language: DebateLanguage = "english",   // ← added
 ): Promise<StartDebateResponse> {
   const res = await fetch(`${BASE}/api/debate/start`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ topic, pro_persona: proPersona, con_persona: conPersona }),
+    body: JSON.stringify({
+      topic,
+      pro_persona: proPersona,
+      con_persona: conPersona,
+      language,                            // ← added
+    }),
   });
   if (!res.ok) throw new Error(`Start failed: ${res.status}`);
   return res.json();
@@ -42,9 +49,9 @@ export async function apiInterrupt(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      session_id: sessionId,
-      user_argument: userArgument,
-      target_persona: targetPersona,
+      session_id:      sessionId,
+      user_argument:   userArgument,
+      target_persona:  targetPersona,
     }),
   });
   if (!res.ok) throw new Error(`Interrupt failed: ${res.status}`);

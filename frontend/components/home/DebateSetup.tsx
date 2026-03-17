@@ -3,20 +3,33 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { PERSONAS, PERSONA_KEYS } from "../../lib/personas";
-import type { PersonaKey } from "../../types";
+import type { PersonaKey, DebateLanguage } from "../../types";
+
+// ── Language options ──────────────────────────────────────────────────────────
+const LANGUAGES: { key: DebateLanguage; label: string; flag: string }[] = [
+  { key: "english", label: "English",  flag: "🇬🇧" },
+  { key: "hindi",   label: "Hindi",    flag: "🇮🇳" },
+  { key: "bengali", label: "Bengali",  flag: "🇧🇩" },
+  { key: "tamil",   label: "Tamil",    flag: "🌴" },
+  { key: "telugu",  label: "Telugu",   flag: "🏺" },
+];
 
 export default function DebateSetup() {
   const router = useRouter();
-  const [topic, setTopic] = useState("");
-  const [pro, setPro]     = useState<PersonaKey>("The Professor");
-  const [con, setCon]     = useState<PersonaKey>("The Aggressor");
-  const [error, setError] = useState("");
+  const [topic,    setTopic]    = useState("");
+  const [pro,      setPro]      = useState<PersonaKey>("The Professor");
+  const [con,      setCon]      = useState<PersonaKey>("The Aggressor");
+  const [language, setLanguage] = useState<DebateLanguage>("english");
+  const [error,    setError]    = useState("");
 
   const handleStart = () => {
     if (!topic.trim()) { setError("⚠️ Enter a debate topic first!"); return; }
     if (pro === con)   { setError("⚠️ Pick two DIFFERENT personas!"); return; }
     setError("");
-    sessionStorage.setItem("debateConfig", JSON.stringify({ topic: topic.trim(), proPersona: pro, conPersona: con }));
+    sessionStorage.setItem(
+      "debateConfig",
+      JSON.stringify({ topic: topic.trim(), proPersona: pro, conPersona: con, language })
+    );
     router.push("/debate");
   };
 
@@ -28,6 +41,7 @@ export default function DebateSetup() {
             SET UP THE DEBATE
           </div>
         </motion.div>
+
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
           style={{ background: "#1a0a40", border: "6px solid #000", boxShadow: "8px 8px 0 #000", padding: "24px 20px", borderRadius: 4, display: "flex", flexDirection: "column", gap: 20 }}>
 
@@ -37,6 +51,43 @@ export default function DebateSetup() {
             <input type="text" value={topic} onChange={(e) => setTopic(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleStart()}
               placeholder="e.g. AI will destroy humanity / Pineapple belongs on pizza..."
               style={{ background: "#0d0626", border: "4px solid #FFE000", color: "#e0d8ff", fontFamily: "'Arial',sans-serif", fontSize: 14, padding: "10px 14px", outline: "none", width: "100%" }} />
+          </div>
+
+          {/* Language selector */}
+          <div className="flex flex-col gap-2">
+            <label style={{ color: "#FFE000", fontStyle: "italic", fontSize: 14, letterSpacing: "0.12em" }}>🌐 DEBATE LANGUAGE</label>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {LANGUAGES.map((lang) => {
+                const active = language === lang.key;
+                return (
+                  <motion.button key={lang.key}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setLanguage(lang.key)}
+                    style={{
+                      display:       "flex",
+                      alignItems:    "center",
+                      gap:           6,
+                      padding:       "7px 14px",
+                      background:    active ? "#FFE000" : "#0d0626",
+                      border:        `3px solid ${active ? "#FFE000" : "#ffffff25"}`,
+                      boxShadow:     active ? "3px 3px 0 #c9a800" : "none",
+                      color:         active ? "#000" : "#e0d8ff",
+                      fontFamily:    "'Impact',sans-serif",
+                      fontStyle:     "italic",
+                      fontSize:      13,
+                      letterSpacing: "0.08em",
+                      cursor:        "pointer",
+                      transition:    "all 0.15s",
+                    }}
+                  >
+                    <span style={{ fontSize: 16 }}>{lang.flag}</span>
+                    <span>{lang.label.toUpperCase()}</span>
+                    {active && <span style={{ fontSize: 9, marginLeft: 2 }}>✔</span>}
+                  </motion.button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Persona selectors */}
@@ -52,7 +103,7 @@ export default function DebateSetup() {
                     <span style={{ fontSize: 20 }}>{p.emoji}</span>
                     <span>{key}</span>
                     {active && <span style={{ marginLeft: "auto", color: p.color, fontSize: 10 }}>✔ SELECTED</span>}
-                    {taken && <span style={{ marginLeft: "auto", fontSize: 10 }}>TAKEN</span>}
+                    {taken  && <span style={{ marginLeft: "auto", fontSize: 10 }}>TAKEN</span>}
                   </motion.button>
                 );
               })}
@@ -68,7 +119,7 @@ export default function DebateSetup() {
                     <span style={{ fontSize: 20 }}>{p.emoji}</span>
                     <span>{key}</span>
                     {active && <span style={{ marginLeft: "auto", color: p.color, fontSize: 10 }}>✔ SELECTED</span>}
-                    {taken && <span style={{ marginLeft: "auto", fontSize: 10 }}>TAKEN</span>}
+                    {taken  && <span style={{ marginLeft: "auto", fontSize: 10 }}>TAKEN</span>}
                   </motion.button>
                 );
               })}
@@ -82,7 +133,12 @@ export default function DebateSetup() {
               <div style={{ color: PERSONAS[pro].color, fontSize: 11, fontStyle: "italic", letterSpacing: "0.1em" }}>{pro}</div>
               <div style={{ color: "#ffffff50", fontFamily: "'Arial',sans-serif", fontSize: 10 }}>PRO</div>
             </div>
-            <div style={{ color: "#FF3B3B", fontSize: 22, fontStyle: "italic" }}>VS</div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <div style={{ color: "#FF3B3B", fontSize: 22, fontStyle: "italic" }}>VS</div>
+              <div style={{ color: "#FFE000", fontFamily: "'Arial',sans-serif", fontSize: 10, letterSpacing: "0.1em" }}>
+                {LANGUAGES.find(l => l.key === language)?.flag} {LANGUAGES.find(l => l.key === language)?.label.toUpperCase()}
+              </div>
+            </div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 28 }}>{PERSONAS[con].emoji}</div>
               <div style={{ color: PERSONAS[con].color, fontSize: 11, fontStyle: "italic", letterSpacing: "0.1em" }}>{con}</div>

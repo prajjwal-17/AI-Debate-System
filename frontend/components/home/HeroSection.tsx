@@ -19,7 +19,7 @@ export default function HeroSection() {
         <span style={{ color: "#fff", textShadow: "6px 6px 0 #000" }}>FORGE</span>
         <br />
         <span style={{ color: "#FF3B3B", textShadow: "6px 6px 0 #000, 8px 8px 0 #FFE000", fontSize: "0.45em", letterSpacing: "0.15em" }}>
-          A.I. STUDIO
+          THIS IS WHERE IDEAS BURN
         </span>
       </motion.h1>
       <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.45 }}
