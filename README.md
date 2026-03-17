@@ -4,6 +4,8 @@
 
 **DebateForge** is a stateful, multi-agent AI debate platform designed to act as an aggressive, real-time sparring partner for Group Discussion (GD) and interview preparation. 
 
+![DebateForge Home Screen](assets/home.jpeg)
+
 ## 📖 The Origin Story
 Standard AI chatbots are built for subservience—they generate walls of text when you ask them for topics. But reading a list of bullet points doesn't prepare you for the real-time pressure, interruptions, and logical clashes of a high-stakes Group Discussion. 
 
@@ -18,7 +20,7 @@ graph TD
 
     subgraph "DebateForge Orchestration Engine"
         API <-->|Manages| Context[DebateSession Memory]
-        API -->|Audio Gen| gTTS[Google TTS]
+        API -->|Audio Gen| WebSpeech[Web Speech API / gTTS]
         API -->|Prompt + Context| LocalAI[(Ollama: Llama 3 / Qwen)]
         LocalAI -->|Inference JSON| API
     end
@@ -38,23 +40,37 @@ graph TD
 
 ## ✨ Core Features
 
-* **Autonomous Multi-Agent Debates:** Two AI models debate complex topics autonomously in real-time.
-* **Dynamic Personas:** System prompting forces the AI into specific psychological profiles that never break character:
-    * 🎓 **The Professor:** Highly analytical, elite academic tone.
-    * 🧌 **The Troll:** Dismissive, slang-heavy, intentionally frustrating but logically sound.
-    * 🔥 **The Aggressor & 🏛️ The Philosopher.**
-* **Real-Time NLP Interruption (The Sandbox):** Humans can pause the loop and inject their own arguments.
-    * *Fallacy Detection:* The engine flags logical flaws (Ad Hominem, Straw Man) in the human's input.
-    * *Steelman Protocol:* Strips away human emotion and rewrites the argument into its strongest logical form before injecting it into the debate.
-* **LLM-as-a-Judge:** An impartial AI evaluates the full transcript, declares a winner based on logical merit, and updates a persistent leaderboard with custom "brag quotes".
-* **Integrated Voice:** Zero-latency Text-to-Speech (TTS) forces active listening instead of passive reading.
+### 1. Autonomous Multi-Agent Debates
+Set a topic, pick your fighters, and watch two AI models debate complex subjects autonomously in real-time.
+
+![Debate Setup Configuration](assets/setup.jpeg)
+
+### 2. Dynamic Personas
+System prompting forces the AI into specific psychological profiles that never break character. 
+* 🎓 **The Professor:** Highly analytical, elite academic tone.
+* 🧌 **The Troll:** Dismissive, slang-heavy, intentionally frustrating but logically sound.
+* 🔥 **The Aggressor & 🏛️ The Philosopher.**
+
+![Live Debate Arena](assets/arena.jpeg)
+
+### 3. Real-Time NLP Interruption (The Sandbox)
+Humans can pause the autonomous loop at any time and type their own arguments to attack either persona. 
+* **Fallacy Detection:** The engine instantly flags logical flaws (e.g., False Dichotomy, Ad Hominem) in the human's input.
+* **Steelman Protocol:** Strips away human emotion and rewrites the argument into its strongest logical form before injecting it into the debate state.
+
+![Human Interrupt and Steelman feature](assets/interrupt.jpg)
+
+### 4. LLM-as-a-Judge & Multilingual Support
+An impartial AI evaluates the full transcript, declares a winner based on logical merit, and updates a persistent leaderboard. The platform also features multilingual support (e.g., Hindi) for broader accessibility.
+
+![Judgment and Multilingual Verdict](assets/verdict.jpeg)
 
 ## 🛠️ Tech Stack
 
 * **Frontend:** React / HTML+JS (Tailwind CSS)
 * **Backend:** Python, FastAPI
 * **AI/Inference:** Ollama (Running local Llama 3 / Qwen 3.5 models via consumer GPU)
-* **Audio:** `gTTS` (Google Text-to-Speech)
+* **Audio:** Web Speech API / `gTTS`
 
 ## 🚀 Local Setup & Installation
 
@@ -91,21 +107,12 @@ The backend will now be running at `http://localhost:8000`. You can access the i
 ### 4. Frontend Setup
 ```bash
 cd ../frontend
-# Add your specific frontend run commands here (e.g., npm install && npm start)
+# Add your specific frontend run commands here
 ```
-
-## 📡 API Endpoints Overview
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/debate/start` | Initializes a new debate session, assigns personas, and returns Turn 1. |
-| `POST` | `/api/debate/next` | Generates the next turn in the autonomous AI loop. |
-| `POST` | `/api/debate/interrupt` | Receives human text, runs Fallacy/Steelman NLP, and updates the state. |
-| `POST` | `/api/debate/judge` | Ends the debate, evaluates the winner, and updates the leaderboard. |
 
 ## 🔮 Future Roadmap
 - [ ] **Zero-Latency Look-Ahead Buffer:** Implement FastAPI background tasks to pre-compute AI responses asynchronously while audio plays.
-- [ ] **Indic Multilingual Support:** Expand dynamic prompts to allow agents to debate natively in Hindi, Bengali, Tamil, and Telugu.
+- [ ] **Expanded Indic Multilingual Support:** Scale the dynamic prompts to allow agents to debate natively in Bengali, Tamil, and Telugu.
 
 ---
 *Built to win arguments. Engineered to run locally.*
