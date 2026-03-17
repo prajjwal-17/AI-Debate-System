@@ -63,7 +63,7 @@ Humans can pause the autonomous loop at any time and type their own arguments to
 ### 4. LLM-as-a-Judge & Multilingual Support
 An impartial AI evaluates the full transcript, declares a winner based on logical merit, and updates a persistent leaderboard. The platform also features multilingual support (e.g., Hindi) for broader accessibility.
 
-![Judgment and Multilingual Verdict](assets/verdict.jpeg)
+![Judgment and Multilingual Verdict](https://github.com/prajjwal-17/AI-Debate-System/blob/main/assests/verdict.jpeg)
 
 ## 🛠️ Tech Stack
 
