@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { PERSONAS } from "../lib/personas";
 import { getBestVoice } from "../lib/voiceUtils";
 import { apiStartDebate, apiNextTurn, apiInterrupt, apiJudge } from "../lib/api";
+import { getPersonaVoice } from "../lib/voiceUtils";
 import type {
   PersonaKey,
   SpeakerSide,
@@ -86,28 +87,33 @@ export function useDebate(): UseDebateReturn {
     };
   }, []);
 
-  const speakText = useCallback(
-    (text: string, speaker: SpeakerSide, personaKey: PersonaKey, onEnd: () => void) => {
-      if (!synthRef.current) { onEnd(); return; }
-      const persona = PERSONAS[personaKey];
-      const utter   = new SpeechSynthesisUtterance(text);
-      utter.pitch   = persona.voicePitch;
-      utter.rate    = persona.voiceRate;
-      utter.volume  = 1;
-      if (voices.length) {
-        const voice = getBestVoice(voices, persona.preferHighVoice);
-        if (voice) utter.voice = voice;
-      }
-      setSpeakingID(speaker);
-      setSpeakingPersona(personaKey);
-      utter.onend   = () => { setSpeakingID(null); setSpeakingPersona(null); onEnd(); };
-      utter.onerror = () => { setSpeakingID(null); setSpeakingPersona(null); onEnd(); };
-      synthRef.current.cancel();
-      synthRef.current.speak(utter);
-    },
-    [voices]
-  );
+const speakText = useCallback(
+  (text: string, speaker: SpeakerSide, personaKey: PersonaKey, onEnd: () => void) => {
+    if (!synthRef.current) { onEnd(); return; }
 
+    const persona = PERSONAS[personaKey];
+    const utter   = new SpeechSynthesisUtterance(text);
+    utter.pitch   = persona.voicePitch;
+    utter.rate    = persona.voiceRate;
+    utter.volume  = 1;
+
+    if (voices.length) {
+      const voice = getPersonaVoice(voices, personaKey);
+      if (voice) {
+        utter.voice = voice;
+        utter.lang  = voice.lang; // use the voice's own lang — critical for Online voices
+      }
+    }
+
+    setSpeakingID(speaker);
+    setSpeakingPersona(personaKey);
+    utter.onend   = () => { setSpeakingID(null); setSpeakingPersona(null); onEnd(); };
+    utter.onerror = () => { setSpeakingID(null); setSpeakingPersona(null); onEnd(); };
+    synthRef.current.cancel();
+    synthRef.current.speak(utter);
+  },
+  [voices]
+);
   const addTranscriptLine = useCallback(
     (speaker: SpeakerSide, text: string, isHuman = false, isSteelmanned = false) => {
       const pro = proPersonaRef.current;
