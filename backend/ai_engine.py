@@ -87,3 +87,18 @@ def judge_debate(transcript_text):
         return json.loads(raw_response)
     except json.JSONDecodeError:
         return {"winner": "Tie", "reason": "Too close to call.", "brag": "It was a legendary battle of wits."}
+    
+def warmup_model():
+    """Fire a tiny request on startup so the model is loaded into memory."""
+    try:
+        print("Warming up Ollama model...")
+        payload = {
+            "model": MODEL,
+            "messages": [{"role": "user", "content": "Hi"}],
+            "stream": False,
+            "options": {"num_predict": 5}
+        }
+        requests.post(OLLAMA_URL, json=payload, timeout=30)
+        print("Model warmed up and ready.")
+    except Exception as e:
+        print(f"Warmup failed (non-critical): {e}")

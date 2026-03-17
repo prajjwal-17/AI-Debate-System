@@ -1,13 +1,19 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from contextlib import asynccontextmanager
 import uuid
 import json
 
-from ai_engine import detect_fallacies, steelman_argument, judge_debate
+from ai_engine import detect_fallacies, steelman_argument, judge_debate, warmup_model
 from moderator import start_debate, generate_next_turn, active_sessions
 
-app = FastAPI(title="DebateForge Autonomous API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    warmup_model()
+    yield
+
+app = FastAPI(title="DebateForge Autonomous API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,6 +27,7 @@ class StartRequest(BaseModel):
     topic: str
     pro_persona: str = "The Professor"
     con_persona: str = "The Aggressor"
+    language: str    = "english"          # ← new field, defaults to english
 
 class NextRequest(BaseModel):
     session_id: str
@@ -33,13 +40,20 @@ class InterruptRequest(BaseModel):
 @app.post("/api/debate/start")
 async def api_start_debate(request: StartRequest):
     session_id = str(uuid.uuid4())
-    first_turn = start_debate(session_id, request.topic, request.pro_persona, request.con_persona)
+    first_turn = start_debate(
+        session_id,
+        request.topic,
+        request.pro_persona,
+        request.con_persona,
+        request.language,              # ← pass language to moderator
+    )
     return {
-        "session_id": session_id,
-        "topic": request.topic,
+        "session_id":    session_id,
+        "topic":         request.topic,
         "pro_character": request.pro_persona,
         "con_character": request.con_persona,
-        "first_turn": first_turn
+        "language":      request.language,
+        "first_turn":    first_turn,
     }
 
 @app.post("/api/debate/next")
@@ -53,15 +67,15 @@ async def api_interrupt(request: InterruptRequest):
     if request.session_id not in active_sessions:
         raise HTTPException(status_code=404, detail="Debate session not found.")
     session = active_sessions[request.session_id]
-    fallacies = detect_fallacies(request.user_argument)
+    fallacies        = detect_fallacies(request.user_argument)
     steelmanned_text = steelman_argument(request.user_argument)
     session.add_message("User", request.user_argument)
     session.current_turn = request.target_persona
     return {
-        "status": "Interrupted Successfully",
+        "status":             "Interrupted Successfully",
         "fallacies_detected": fallacies,
         "steelmanned_version": steelmanned_text,
-        "next_speaker": session.current_turn
+        "next_speaker":       session.current_turn,
     }
 
 @app.get("/api/personas/stats")
@@ -73,7 +87,7 @@ async def get_leaderboard():
 async def api_judge_debate(request: NextRequest):
     if request.session_id not in active_sessions:
         raise HTTPException(status_code=404, detail="Session not found.")
-    session = active_sessions[request.session_id]
+    session    = active_sessions[request.session_id]
     transcript = "\n".join([
         f"{msg['speaker']} ({session.characters.get(msg['speaker'], 'User')}): {msg['text']}"
         for msg in session.history
@@ -89,6 +103,6 @@ async def api_judge_debate(request: NextRequest):
         with open("leaderboard.json", "w") as f:
             json.dump(leaderboard, f)
     return {
-        "verdict": result,
-        "winning_character": session.characters.get(result.get("winner"), "None")
+        "verdict":           result,
+        "winning_character": session.characters.get(result.get("winner"), "None"),
     }
