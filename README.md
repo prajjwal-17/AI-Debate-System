@@ -43,7 +43,7 @@ graph TD
 ### 1. Autonomous Multi-Agent Debates
 Set a topic, pick your fighters, and watch two AI models debate complex subjects autonomously in real-time.
 
-![Debate Setup Configuration](assets/setup.jpeg)
+![Debate Setup Configuration](https://github.com/prajjwal-17/AI-Debate-System/blob/main/assests/setup.jpeg)
 
 ### 2. Dynamic Personas
 System prompting forces the AI into specific psychological profiles that never break character. 
