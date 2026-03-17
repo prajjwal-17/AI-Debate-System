@@ -4,7 +4,7 @@
 
 **DebateForge** is a stateful, multi-agent AI debate platform designed to act as an aggressive, real-time sparring partner for Group Discussion (GD) and interview preparation. 
 
-![DebateForge Home Screen](assets/home.jpg)
+![DebateForge Home Screen](https://github.com/prajjwal-17/AI-Debate-System/blob/main/assests/home.jpg)
 
 ## 📖 The Origin Story
 Standard AI chatbots are built for subservience—they generate walls of text when you ask them for topics. But reading a list of bullet points doesn't prepare you for the real-time pressure, interruptions, and logical clashes of a high-stakes Group Discussion. 
