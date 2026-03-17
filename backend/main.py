@@ -46,7 +46,7 @@ async def api_start_debate(request: StartRequest):
 async def api_next_turn(request: NextRequest):
     if request.session_id not in active_sessions:
         raise HTTPException(status_code=404, detail="Debate session not found.")
-    return generate_next_turn(request.session_id)
+    return await generate_next_turn(request.session_id)
 
 @app.post("/api/debate/interrupt")
 async def api_interrupt(request: InterruptRequest):
